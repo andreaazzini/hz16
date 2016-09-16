@@ -5,9 +5,8 @@
   "version": "0.1.0",
   "description": "Truly Passwordless Authentication",
 
-  "content_scripts": [{
-    "css": ["styles.css"],
-    "js": ["content.js"],
-    "matches": ["<all_urls>"]
-  }]
+  "browser_action": {
+    "default_title": "",
+    "default_popup": "popup.html"
+  }
 }
