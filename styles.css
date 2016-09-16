@@ -1,0 +1,6 @@
+input[type="password"] {
+  background-image: url('http://shots.jotform.com/jan/images/lock-icon.png');
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-left: 5px;
+}
