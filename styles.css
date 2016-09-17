@@ -1,8 +1,26 @@
-body {
-  margin: 0;
+.hz16-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 20%;
+    top: 5%;
+    width: 60%;
+    height: 50%;
+    border-radius: 5px;
+    border: 1px solid black;
 }
 
-#container {
-  width: 560px;
-  height: 315px;
+.hz16-modal #container {
+  width: 100%;
+  height: 100%;
+}
+
+.hz16-modal #red-dot {
+  position: absolute;
+  background-color: red;
+  top: 20px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
 }

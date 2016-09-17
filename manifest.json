@@ -5,20 +5,20 @@
   "version": "0.1.0",
   "description": "Truly Passwordless Authentication",
   "browser_action": {
-    "default_icon": "icon.png",
-    "default_title": "",
-    "default_popup": "popup.html"
+    "default_icon": "icon.png"
   },
   "permissions": [
     "storage",
     "tabs"
   ],
-  "options_page": "options.html",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "css": ["styles.css"],
-      "js": ["jquery.min.js"]
+      "js": ["jquery.min.js", "content.js"]
     }
-  ]
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  }
 }
