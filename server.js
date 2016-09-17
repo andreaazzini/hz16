@@ -7,6 +7,8 @@ app.set('port', (process.env.PORT || 3000));
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use('/nacl', express.static(__dirname+'/nacl'));
+app.use('/', express.static(__dirname));
 
 app.post('/images', function (req, res) {
   req.body.image = req.body.image.replace(/^data:image\/jpeg+;base64,/, "");

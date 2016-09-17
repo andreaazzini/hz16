@@ -1,0 +1,19 @@
+clang version 3.7.0 (https://chromium.googlesource.com/a/native_client/pnacl-clang.git cf0dc7f6e6123dfa9b8834b56743315300b34e6c) (https://chromium.googlesource.com/a/native_client/pnacl-llvm.git baa63524b6b493ec2a6aa2c5193d9f25c0c33191)
+Target: le32-unknown-nacl
+Thread model: posix
+ "/home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/bin/clang" -cc1 -triple le32-unknown-nacl -emit-llvm-bc -emit-llvm-uselists -disable-free -main-file-name image_proc.cc -mrelocation-model static -mthread-model posix -mdisable-fp-elim -fmath-errno -no-integrated-as -mconstructor-aliases -fuse-init-array -target-linker-version 2.22 -v -dwarf-column-info -coverage-file /home/lumlum/Projects/hackzurich/hz16/nacl/image_proc.bc---image_proc.cc---.po -nostdsysteminc -nobuiltininc -resource-dir /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/bin/../lib/clang/3.7.0 -isystem /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/le32-nacl/usr/include -isystem /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/lib/clang/3.7.0/include -isystem /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/le32-nacl/include/c++/v1 -isystem /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/le32-nacl/include -isystem /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/sdk/include -I /home/lumlum/Projects/hackzurich/hz16/nacl/include -O2 -fdeprecated-macro -fno-dwarf-directory-asm -fdebug-compilation-dir /home/lumlum/Projects/hackzurich/hz16/nacl -ferror-limit 19 -fmessage-length 0 -mstackrealign -fobjc-runtime=gcc -fcxx-exceptions -fexceptions -fno-common -fdiagnostics-show-option -fno-gnu-inline-asm -fno-math-builtin -o /home/lumlum/Projects/hackzurich/hz16/nacl/image_proc.bc---image_proc.cc---.po -x c++ image_proc.cc
+clang -cc1 version 3.7.0 based upon LLVM 3.7.0svn default target x86_64-unknown-linux-gnu
+ignoring nonexistent directory "/home/lumlum/Projects/hackzurich/hz16/nacl/include"
+ignoring nonexistent directory "/home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/le32-nacl/usr/include"
+ignoring nonexistent directory "/home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/sdk/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/lib/clang/3.7.0/include
+ /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/le32-nacl/include/c++/v1
+ /home/lumlum/Projects/hackzurich/hz16/nacl/toolchain/linux_pnacl/le32-nacl/include
+End of search list.
+image_proc.cc:5:10: fatal error: 'ppapi/cpp/instance.h' file not found
+#include <ppapi/cpp/instance.h>
+         ^
+1 error generated.
+make: *** [image_proc.bc] Error 1
