@@ -22,9 +22,20 @@ function toMorse(string) {
 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-    chrome.tabs.getSelected(null,function(tab) { // null defaults to current window
+    chrome.tabs.getSelected(null,function(tab) {
       var title = tab.title;
-      console.log(toMorse(title));
+      var morseString = toMorse(title);
+
+      var colors = {
+        '.': 'white',
+        '-': 'black'
+      };
+
+      var i = 0;
+      setInterval(function() {
+        document.body.style.backgroundColor = colors[morseString[i]];
+        i + 1 == morseString.length ? i = 0 : i += 1;
+      }, 200);
     });
   });
 }
