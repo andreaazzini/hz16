@@ -37,7 +37,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
       var i = 0;
       setInterval(function() {
-        document.body.style.backgroundColor = colors[morseString[i]];
+        document.getElementById("container").style.backgroundColor = colors[morseString[i]];
         i + 1 == morseString.length ? i = 0 : i += 1;
       }, 200);
 
