@@ -1,22 +1,40 @@
 // Saves options to chrome.storage
 function save_options() {
   var grantedPermissions = document.getElementById('grant').checked;
+  navigator.getUserMedia =
+    navigator.getUserMedia ||
+    navigator.webkitGetUserMedia
+
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-      var track = stream.getTracks()[0];
-      track.stop();
+      success(stream)
+    });
+  } else if (navigator.getUserMedia) {
+    navigator.getUserMedia({ video: true }, function(stream) {
+      success(stream)
+    }, fail);
+  } else {
+    fail();
+  }
+
+  function success(stream) {
+    var track = stream.getTracks()[0];
+
+    chrome.storage.sync.set({
+      grantedPermissions: grantedPermissions
+    }, function() {
+      // Update status to let user know options were saved.
+      var status = document.getElementById('status');
+      status.textContent = 'Options saved.';
+      setTimeout(function() {
+        status.textContent = '';
+      }, 750);
     });
   }
-  chrome.storage.sync.set({
-    grantedPermissions: grantedPermissions
-  }, function() {
-    // Update status to let user know options were saved.
-    var status = document.getElementById('status');
-    status.textContent = 'Options saved.';
-    setTimeout(function() {
-      status.textContent = '';
-    }, 750);
-  });
+
+  function fail() {
+    console.log("Error");
+  }
 }
 
 // Restores select box and checkbox state using the preferences
