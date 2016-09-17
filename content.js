@@ -3,7 +3,7 @@ var defaultMessageTypes = {
   'log': console.log
 };
 
-var ImageProcModule = null; 
+var ImageProcModule = null;
 function buildModal() {
   console.log("Building modal");
   var modal = document.createElement('div');
@@ -111,7 +111,7 @@ function createNaClModule(name, path, width, height, attrs) {
   // to ensure that the listeners are active before the NaCl module 'load'
   // event fires.
 	var listenerDiv = document.createElement('div');
-	var modal = document.getElementsByClassName('hz16-modal')[0];	
+	var modal = document.getElementsByClassName('hz16-modal')[0];
 	listenerDiv.id = 'listener';
     attachDefaultListeners(listenerDiv);
 	modal.appendChild(listenerDiv);
@@ -168,7 +168,7 @@ function fetchVideoImage() {
               width: canvas.width,
               height: canvas.height,
               data : context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
-              index : j					
+              index : j
           }
           console.log("Fetched video Data");
           ImageProcModule.postMessage(data);
@@ -201,7 +201,6 @@ chrome.runtime.onMessage.addListener(
             }
           }
         }
-
 
         function fail() {
           console.log("Error");

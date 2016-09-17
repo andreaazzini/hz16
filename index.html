@@ -1,10 +1,131 @@
 <html>
-<head>
-<title>Localhost</title></head>
-<body>
-<form>
-<input type = "email" name ="email" />
-<input type = "password"/>
-</form>
-</body>
+  <head>
+    <title>Localhost</title>
+    <link rel="stylesheet" type="text/css" href="signin.css">
+    <link rel="stylesheet" type="text/css" href="../scripts/bootstrap/dist/css/bootstrap.min.css">
+  </head>
+
+  <body>
+    <div class="container">
+      <div id="alert-message"></div>
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+        <div class="row">
+          <div class="col-md-6">
+            <button type="button" onclick="signin()" class="btn btn-lg btn-primary btn-block">Sign in</button>
+          </div>
+          <div class="col-md-6">
+            <button type="button" onclick="signup()" class="btn btn-lg btn-success btn-block">Sign up</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+    <script>
+      var config = {
+        apiKey: "AIzaSyBGRJGQZxvO2Kq65fdpBtH8iQiiRdsew9Y",
+        authDomain: "hz16-2e1dc.firebaseapp.com",
+        databaseURL: "https://hz16-2e1dc.firebaseio.com",
+        storageBucket: "",
+        messagingSenderId: "20674400046"
+      };
+      firebase.initializeApp(config);
+
+      function signin() {
+        var email = document.getElementById("inputEmail").value;
+        var password = document.getElementById("inputPassword").value;
+
+        var http = new XMLHttpRequest();
+        var url = "http://localhost:3000/";
+        var params = "email=" + email + "&password=" + password;
+        http.open("POST", url, false);
+
+        //Send the proper header information along with the request
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        http.onreadystatechange = function() {
+          if (http.status == 200) {
+            while (document.body.firstChild) {
+              document.body.removeChild(document.body.firstChild)
+            }
+            document.body.style.backgroundImage = 'none';
+            //document.body.style.backgroundColor = 'white';
+
+            var video = document.createElement('video');
+            video.setAttribute('playsinline', true);
+            video.setAttribute('autoplay', true);
+            video.setAttribute('muted', true);
+            video.setAttribute('loop', true);
+            video.setAttribute('id', 'bgvid');
+
+            var source = document.createElement('source');
+            source.setAttribute('src', 'polina.mp4');
+            source.setAttribute('type', 'video/mp4');
+
+            var h1 = document.createElement('h1');
+            h1.setAttribute('id', 'money-text');
+            h1.innerHTML = 'MONEY';
+
+            video.appendChild(source);
+            document.body.appendChild(video);
+            document.body.appendChild(h1);
+          } else {
+            document.getElementById("inputEmail").value = '';
+            document.getElementById("inputPassword").value = '';
+
+            var alertMessage = document.getElementById('alert-message');
+            alertMessage.className = 'alert alert-danger';
+            alertMessage.innerHTML = '<strong>Error!</strong> Wrong user or password.';
+            alertMessage.style.visibility = 'visible';
+            alertMessage.style.opacity = '0';
+            alertMessage.style.transition = 'opacity 5s linear';
+          }
+        }
+        http.send(params);
+      }
+
+      function signup() {
+        var email = document.getElementById("inputEmail").value;
+        var password = document.getElementById("inputPassword").value;
+
+        var http = new XMLHttpRequest();
+        var url = "http://localhost:3000/signup";
+        var params = "email=" + email + "&password=" + password;
+        http.open("POST", url, false);
+
+        //Send the proper header information along with the request
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        http.onreadystatechange = function() {
+          if (http.status == 200) {
+            document.getElementById("inputEmail").value = '';
+            document.getElementById("inputPassword").value = '';
+
+            var alertMessage = document.getElementById('alert-message');
+            alertMessage.className = 'alert alert-success';
+            alertMessage.innerHTML = '<strong>Success!</strong> You\'ve successfully signed up!.';
+            alertMessage.style.visibility = 'visible';
+            alertMessage.style.opacity = '0';
+            alertMessage.style.transition = 'opacity 5s linear';
+          } else {
+            document.getElementById("inputEmail").value = '';
+            document.getElementById("inputPassword").value = '';
+
+            var alertMessage = document.getElementById('alert-message');
+            alertMessage.className = 'alert alert-danger';
+            alertMessage.innerHTML = '<strong>Error!</strong> You\'ve already signed up or your password is too short.';
+            alertMessage.style.visibility = 'visible';
+            alertMessage.style.opacity = '0';
+            alertMessage.style.transition = 'opacity 5s linear';
+          }
+        }
+        http.send(params);
+      }
+    </script>
+  </body>
 </html>
