@@ -17,15 +17,15 @@ function buildModal() {
 
   var video = document.createElement('video');
   video.id = "video";
-  video.setAttribute("width", "640");
-  video.setAttribute("height", "480");
+  video.setAttribute("width", "1280");
+  video.setAttribute("height", "720");
   video.autoplay = true;
   video.hidden = true;
 
   var canvas = document.createElement('canvas');
   canvas.id = "canvas";
-  canvas.setAttribute("width", "640");
-  canvas.setAttribute("height", "480");
+  canvas.setAttribute("width", "1280");
+  canvas.setAttribute("height", "720");
   canvas.hidden = true;
 
   modal.appendChild(container);
@@ -163,11 +163,11 @@ function fetchVideoImage() {
           var canvas = document.getElementById('canvas');
           var context = canvas.getContext('2d');
           var j = 0;
-          context.drawImage(video, 0, 0, 640, 480);
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
           var data = {
               width: canvas.width,
               height: canvas.height,
-              data : context.getImageData(0, 0, canvas.width, canvas.height),
+              data : context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
               index : j					
           }
           console.log("Fetched video Data");
@@ -181,7 +181,7 @@ chrome.runtime.onMessage.addListener(
     if (request.message === "clicked_browser_action") {
       console.log("In add listener");
       buildModal();
-      createNaClModule("image_proc", "nacl", 640, 480);
+      createNaClModule("image_proc", "nacl", 1280, 720);
       var modal = document.getElementsByClassName("hz16-modal")[0];
       if (modal.style.display == 'block') {
         modal.style.display = 'none';
