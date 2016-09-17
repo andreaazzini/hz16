@@ -22,6 +22,10 @@ function toMorse(string) {
 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+    var video = document.getElementById('video');
+    video.src = window.URL.createObjectURL(stream);
+    video.play();
+
     chrome.tabs.getSelected(null,function(tab) {
       var title = tab.title;
       var morseString = toMorse(title);
@@ -36,6 +40,23 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         document.body.style.backgroundColor = colors[morseString[i]];
         i + 1 == morseString.length ? i = 0 : i += 1;
       }, 200);
+
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
+      var j = 0;
+      setInterval(function() {
+        context.drawImage(video, 0, 0, 640, 480);
+        var dataUrl = canvas.toDataURL("image/jpeg", 1.0);
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/images",
+          data: {
+            image: dataUrl,
+            index: j
+          }
+        });
+        j += 1;
+      }, 1000);
     });
   });
 }
