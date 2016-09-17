@@ -8,6 +8,8 @@
 #include <ppapi/cpp/var_dictionary.h>
 #include <ppapi/cpp/var_array_buffer.h>
 
+#include <opencv2/core/core.hpp>
+
 
 class ImageProcInstance : public pp::Instance {
  public:
@@ -19,11 +21,18 @@ class ImageProcInstance : public pp::Instance {
 	pp::VarDictionary var_dict( var_message );
 
 	// Message is number of simulations to run
-	//auto data = pp::VarArrayBuffer( var_dict.Get("data") );
+	auto data = pp::VarArrayBuffer(var_dict.Get("data"));
 	auto width = var_dict.Get("width").AsInt();
 	auto height = var_dict.Get("height").AsInt();
+
+    uchar* byteData = static_cast<uchar*>(data.Map());
+
+    auto img = cv::Mat(height, width, CV_8UC4, byteData);
+
+    cv::Vec4b v = img.at<cv::Vec4b>(height / 2, width / 2);
+
     printf("Received message");
-    pp::Var var_reply(width * height);
+    pp::Var var_reply(v[0] + v[1] * 1000 + v[2] * 1000000);
     PostMessage(var_reply);
    //PostMessage
   }

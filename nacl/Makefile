@@ -17,7 +17,7 @@ NACL_SDK_ROOT ?= $(abspath $(dir $(THIS_MAKEFILE)))
 
 # Project Build flags
 WARNINGS := -Wno-long-long -Wswitch-enum -pedantic 
-CXXFLAGS := -pthread -std=c++11 $(WARNINGS)
+CXXFLAGS := -pthread -std=gnu++14 $(WARNINGS)
 
 #
 # Compute tool paths
@@ -30,8 +30,8 @@ RM := $(OSHELPERS) rm
 PNACL_TC_PATH := $(abspath $(NACL_SDK_ROOT)/toolchain/$(OSNAME)_pnacl)
 PNACL_CXX := $(PNACL_TC_PATH)/bin/pnacl-clang++
 PNACL_FINALIZE := $(PNACL_TC_PATH)/bin/pnacl-finalize
-CXXFLAGS := -I$(NACL_SDK_ROOT)/include -std=c++11
-LDFLAGS := -L$(NACL_SDK_ROOT)/lib/pnacl/Release -lppapi_cpp -lppapi
+CXXFLAGS := -I/Users/emi/Projects/naclports/src/out/build/opencv/opencv-2.4.9/include -I$(NACL_SDK_ROOT)/include -std=gnu++11 
+LDFLAGS := -L$(NACL_SDK_ROOT)/lib/pnacl/Release -lopencv_objdetect -lopencv_imgproc -lopencv_core -lppapi_cpp -lppapi -lz
 
 #
 # Disable DOS PATH warning when using Cygwin based tools Windows
