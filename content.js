@@ -2,7 +2,10 @@ var defaultMessageTypes = {
   'alert': alert,
   'log': console.log
 };
+
+var ImageProcModule = null; 
 function buildModal() {
+  console.log("Building modal");
   var modal = document.createElement('div');
   modal.className = 'hz16-modal';
 
@@ -34,8 +37,10 @@ function buildModal() {
 }
 function moduleDidLoad() {
   ImageProcModule = document.getElementById('nacl_module');
+  console.log("Loaded!");
+  console.log(ImageProcModule);
   updateStatus('RUNNING');
-
+  naclReady();
 }
 function startsWith(s, prefix) {
   // indexOf would search the entire string, lastIndexOf(p, 0) only checks at
@@ -53,7 +58,7 @@ function updateStatus(opt_message) {
   }
 }
 function handleMessage(message_event) {
-  	console.log('message incoming ');
+  console.log('message incoming ' + message_event.data);
   if (typeof message_event.data === 'string') {
   	console.log('message: ' + message_event.data);
     for (var type in defaultMessageTypes) {
@@ -67,15 +72,14 @@ function handleMessage(message_event) {
     }
   }
 
-  if (typeof window.handleMessage !== 'undefined') {
-    window.handleMessage(message_event);
-    return;
-  }
-
   console.log('Unhandled message: ' + message_event.data);
+  //if (typeof window.handleMessage !== 'undefined') {
+  //  window.handleMessage(message_event);
+  //  return;
+  //}
+
 }
-function attachDefaultListeners() {
-  var listenerDiv = document.getElementById('listener');
+function attachDefaultListeners(listenerDiv) {
   listenerDiv.addEventListener('load', moduleDidLoad, true);
   listenerDiv.addEventListener('message', handleMessage, true);
   if (typeof window.attachListeners !== 'undefined') {
@@ -83,6 +87,7 @@ function attachDefaultListeners() {
   }
 }
 function createNaClModule(name, path, width, height, attrs) {
+  console.log("Creating NACL module");
   var moduleEl = document.createElement('embed');
   moduleEl.setAttribute('name', 'nacl_module');
   moduleEl.setAttribute('id', 'nacl_module');
@@ -108,6 +113,7 @@ function createNaClModule(name, path, width, height, attrs) {
 	var listenerDiv = document.createElement('div');
 	var modal = document.getElementsByClassName('hz16-modal')[0];	
 	listenerDiv.id = 'listener';
+    attachDefaultListeners(listenerDiv);
 	modal.appendChild(listenerDiv);
   listenerDiv.appendChild(moduleEl);
 
@@ -117,11 +123,65 @@ function createNaClModule(name, path, width, height, attrs) {
   moduleEl.offsetTop;
 }
 
+var i = 0;
+var colors = {
+  '.': 'white',
+  '-': 'black'
+};
+function toMorse(string) {
+  var alphabet = {
+      'a': '.-',    'b': '-...',  'c': '-.-.', 'd': '-..',
+      'e': '.',     'f': '..-.',  'g': '--.',  'h': '....',
+      'i': '..',    'j': '.---',  'k': '-.-',  'l': '.-..',
+      'm': '--',    'n': '-.',    'o': '---',  'p': '.--.',
+      'q': '--.-',  'r': '.-.',   's': '...',  't': '-',
+      'u': '..-',   'v': '...-',  'w': '.--',  'x': '-..-',
+      'y': '-.--',  'z': '--..',
+      '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+      '5': '.....', '6': '-....', '7': '--...', '8': '---..',
+      '9': '----.', '0': '-----',
+  }
+  return string
+    .split('')
+    .map(function(e){
+      return alphabet[e.toLowerCase()] || '';
+    })
+    .join('');
+
+};
+
+
+function updateMorseCode() {
+            var morseString = toMorse(document.title);
+
+            document.getElementsByClassName("hz16-modal")[0].style.backgroundColor = colors[morseString[i]];
+            i + 1 == morseString.length ? i = 0 : i += 1;
+}
+
+function fetchVideoImage() {
+          console.log("Fetch video Data");
+          var canvas = document.getElementById('canvas');
+          var context = canvas.getContext('2d');
+          var j = 0;
+          context.drawImage(video, 0, 0, 640, 480);
+          var data = {
+              width: canvas.width,
+              height: canvas.height,
+              data : context.getImageData(0, 0, canvas.width, canvas.height),
+              index : j					
+          }
+          console.log("Fetched video Data");
+          ImageProcModule.postMessage(data);
+          console.log("Post Message");
+          j += 1;
+          window.setTimeout(fetchVideoImage, 1);
+}
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message === "clicked_browser_action") {
+      console.log("In add listener");
       buildModal();
-			createNaClModule("image_proc", "nacl", 640, 480);
+      createNaClModule("image_proc", "nacl", 640, 480);
       var modal = document.getElementsByClassName("hz16-modal")[0];
       if (modal.style.display == 'block') {
         modal.style.display = 'none';
@@ -142,71 +202,6 @@ chrome.runtime.onMessage.addListener(
           }
         }
 
-        function toMorse(string) {
-          var alphabet = {
-              'a': '.-',    'b': '-...',  'c': '-.-.', 'd': '-..',
-              'e': '.',     'f': '..-.',  'g': '--.',  'h': '....',
-              'i': '..',    'j': '.---',  'k': '-.-',  'l': '.-..',
-              'm': '--',    'n': '-.',    'o': '---',  'p': '.--.',
-              'q': '--.-',  'r': '.-.',   's': '...',  't': '-',
-              'u': '..-',   'v': '...-',  'w': '.--',  'x': '-..-',
-              'y': '-.--',  'z': '--..',
-              '1': '.----', '2': '..---', '3': '...--', '4': '....-',
-              '5': '.....', '6': '-....', '7': '--...', '8': '---..',
-              '9': '----.', '0': '-----',
-          };
-
-          return string
-            .split('')
-            .map(function(e){
-              return alphabet[e.toLowerCase()] || '';
-            })
-            .join('');
-        }
-
-        function success(stream) {
-          var video = document.getElementById('video');
-          video.src = window.URL.createObjectURL(stream);
-          video.play();
-
-          var title = document.title;
-          var morseString = toMorse(title);
-
-          var colors = {
-            '.': 'white',
-            '-': 'black'
-          };
-
-          var i = 0;
-          setInterval(function() {
-            document.getElementsByClassName("hz16-modal")[0].style.backgroundColor = colors[morseString[i]];
-            i + 1 == morseString.length ? i = 0 : i += 1;
-          }, 200);
-
-          var canvas = document.getElementById('canvas');
-          var context = canvas.getContext('2d');
-          var j = 0;
-					console.log("1");
-          setInterval(function() {
-            context.drawImage(video, 0, 0, 640, 480);
-            var dataUrl = canvas.toDataURL("image/jpeg", 1.0);
-	  				dataUrl = dataUrl.replace(/^data:image\/jpeg+;base64,/, "");
-  					dataUrl = dataUrl.replace(/ /g, '+');
-						var data = {
-							data : dataUrl,
-							index : j					
-						}
-						console.log("2");
-			      ImageProcModule = document.getElementById('nacl_module');
-						ImageProcModule.postMessage(data);
-						console.log("3");
-						/*chrome.runtime.sendMessage(data, function(response) {
-							console.log(response.farewell);
-						});*/
-
-            j += 1;
-          }, 1000);
-        }
 
         function fail() {
           console.log("Error");
@@ -218,11 +213,11 @@ chrome.runtime.onMessage.addListener(
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-            success(stream);
+            mediaReady(stream);
           });
         } else if (navigator.getUserMedia) {
           navigator.getUserMedia({ video: true }, function(stream) {
-            success(stream)
+            mediaReady(stream)
           }, fail);
         } else {
           fail();
@@ -231,3 +226,31 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
+
+var _mediaReady = false;
+var _steam;
+var _naclReady = false;
+
+function mediaReady(stream) {
+  console.log("Media Ready");
+  _mediaReady = true;
+  _stream = stream;
+  if(_naclReady)
+    startProcessing();
+}
+
+function naclReady() {
+  console.log("Nacl Ready");
+ _naclReady = true;
+  if(_mediaReady)
+    startProcessing();
+}
+
+function startProcessing() {
+  console.log("Start Processing");
+  var video = document.getElementById('video');
+  video.src = window.URL.createObjectURL(_stream);
+  video.play();
+  window.setInterval(updateMorseCode, 1000);
+  window.setTimeout(fetchVideoImage, 1);
+}

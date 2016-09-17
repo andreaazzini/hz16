@@ -19,10 +19,12 @@ class ImageProcInstance : public pp::Instance {
 	pp::VarDictionary var_dict( var_message );
 
 	// Message is number of simulations to run
-	auto data   = pp::VarArrayBuffer( var_dict.Get("data") );
-	auto index   = pp::VarArrayBuffer( var_dict.Get("index") );
-      pp::Var var_reply(data);
-      PostMessage(var_reply);
+	//auto data = pp::VarArrayBuffer( var_dict.Get("data") );
+	auto width = var_dict.Get("width").AsInt();
+	auto height = var_dict.Get("height").AsInt();
+    printf("Received message");
+    pp::Var var_reply(width * height);
+    PostMessage(var_reply);
    //PostMessage
   }
 };
@@ -40,6 +42,7 @@ class ImageProcModule : public pp::Module {
 namespace pp {
 
 Module* CreateModule() {
+  printf("Image proc init'ing");
   return new ImageProcModule();
 }
 
