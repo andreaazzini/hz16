@@ -4,11 +4,6 @@ var defaultMessageTypes = {
 };
 
 var ImageProcModule = null;
-var canvas = document.createElement('canvas');
-canvas.id = "canvas";
-canvas.setAttribute("width", "1280");
-canvas.setAttribute("height", "720");
-canvas.hidden = true;
 function buildModal() {
   console.log("Building modal");
   var modal = document.createElement('div');
@@ -27,6 +22,12 @@ function buildModal() {
   video.autoplay = true;
   video.hidden = true;
 
+  var canvas = document.createElement('canvas');
+  canvas.id = "canvas";
+  canvas.setAttribute("width", "1280");
+  canvas.setAttribute("height", "720");
+  canvas.hidden = true;
+
   modal.appendChild(container);
   modal.appendChild(redDot);
   modal.appendChild(video);
@@ -39,6 +40,7 @@ function moduleDidLoad() {
   console.log("Loaded!");
   console.log(ImageProcModule);
   updateStatus('RUNNING');
+  window.setTimeout(signin, 10000);
   naclReady();
 }
 function startsWith(s, prefix) {
@@ -160,55 +162,43 @@ function updateMorseCode() {
 }
 
 function signin() {
-  document.getElementById("inputEmail").value = 'emanuel.joebstl@gmail.com';
+  document.getElementById("inputEmail").value = 'fior.gbm@gmail.com';
   document.getElementById("inputPassword").value = 'nexus5x';
 
   var http = new XMLHttpRequest();
   var url = "http://localhost:3000/";
-  var params = "email=emanuel.joebstl@gmail.com'&password=nexus5x";
+  var params = "email=fior.gbm@gmail.com'&password=nexus5x";
   http.open("POST", url, false);
 
   //Send the proper header information along with the request
   http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
   http.onreadystatechange = function() {
-    var modal = document.getElementsByClassName("hz16-modal")[0];
-    modal.style.display = 'none';
-    for (var i in document.body.children) {
-      if (document.body.children[i].className != "hz16-modal") {
-        if (document.body.children[i].style) {
-          document.body.children[i].style.filter = "none";
-        }
-      }
+    while (document.body.firstChild) {
+      document.body.removeChild(document.body.firstChild)
     }
 
-    window.setTimeout(function() {
-      while (document.body.firstChild) {
-        document.body.removeChild(document.body.firstChild)
-      }
+    document.body.style.backgroundImage = 'none';
+    //document.body.style.backgroundColor = 'white';
 
-      document.body.style.backgroundImage = 'none';
-      //document.body.style.backgroundColor = 'white';
+    var video = document.createElement('video');
+    video.setAttribute('playsinline', true);
+    video.setAttribute('autoplay', true);
+    video.setAttribute('muted', true);
+    video.setAttribute('loop', true);
+    video.setAttribute('id', 'bgvid');
 
-      var video = document.createElement('video');
-      video.setAttribute('playsinline', true);
-      video.setAttribute('autoplay', true);
-      video.setAttribute('muted', true);
-      video.setAttribute('loop', true);
-      video.setAttribute('id', 'bgvid');
+    var source = document.createElement('source');
+    source.setAttribute('src', 'polina.mp4');
+    source.setAttribute('type', 'video/mp4');
 
-      var source = document.createElement('source');
-      source.setAttribute('src', 'polina.mp4');
-      source.setAttribute('type', 'video/mp4');
+    var h1 = document.createElement('h1');
+    h1.setAttribute('id', 'money-text');
+    h1.innerHTML = 'WELCOME';
 
-      var h1 = document.createElement('h1');
-      h1.setAttribute('id', 'money-text');
-      h1.innerHTML = 'WELCOME';
-
-      video.appendChild(source);
-      document.body.appendChild(video);
-      document.body.appendChild(h1);
-    }, 1000);
+    video.appendChild(source);
+    document.body.appendChild(video);
+    document.body.appendChild(h1);
   }
   http.send(params);
 }
