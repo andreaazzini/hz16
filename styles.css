@@ -2,10 +2,10 @@
     display: none;
     position: fixed;
     z-index: 99999;
-    left: 20%;
+    left: 5%;
     top: 5%;
-    width: 60%;
-    height: 50%;
+    width: 90%;
+    height: 90%;
     border-radius: 5px;
     border: 1px solid black;
 }
