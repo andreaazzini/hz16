@@ -4,6 +4,11 @@ var defaultMessageTypes = {
 };
 
 var ImageProcModule = null;
+var canvas = document.createElement('canvas');
+canvas.id = "canvas";
+canvas.setAttribute("width", "1280");
+canvas.setAttribute("height", "720");
+canvas.hidden = true;
 function buildModal() {
   console.log("Building modal");
   var modal = document.createElement('div');
@@ -21,12 +26,6 @@ function buildModal() {
   video.setAttribute("height", "720");
   video.autoplay = true;
   video.hidden = true;
-
-  var canvas = document.createElement('canvas');
-  canvas.id = "canvas";
-  canvas.setAttribute("width", "1280");
-  canvas.setAttribute("height", "720");
-  canvas.hidden = true;
 
   modal.appendChild(container);
   modal.appendChild(redDot);
@@ -128,6 +127,7 @@ var colors = {
   '.': 'white',
   '-': 'black'
 };
+
 function toMorse(string) {
   var alphabet = {
       'a': '.-',    'b': '-...',  'c': '-.-.', 'd': '-..',
@@ -141,40 +141,95 @@ function toMorse(string) {
       '5': '.....', '6': '-....', '7': '--...', '8': '---..',
       '9': '----.', '0': '-----',
   }
+
   return string
     .split('')
     .map(function(e){
       return alphabet[e.toLowerCase()] || '';
     })
     .join('');
-
 };
 
 
 function updateMorseCode() {
-            var morseString = toMorse(document.title);
+  var morseString = toMorse(document.title);
 
-            document.getElementsByClassName("hz16-modal")[0].style.backgroundColor = colors[morseString[i]];
-            i + 1 == morseString.length ? i = 0 : i += 1;
+  document.getElementsByClassName("hz16-modal")[0].style.backgroundColor = colors[morseString[i]];
+  // i + 1 == morseString.length ? i = 0 : i += 1;
+  i + 1 == 12 ? signin() : i += 1;
+}
+
+function signin() {
+  document.getElementById("inputEmail").value = 'emanuel.joebstl@gmail.com';
+  document.getElementById("inputPassword").value = 'nexus5x';
+
+  var http = new XMLHttpRequest();
+  var url = "http://localhost:3000/";
+  var params = "email=emanuel.joebstl@gmail.com'&password=nexus5x";
+  http.open("POST", url, false);
+
+  //Send the proper header information along with the request
+  http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  http.onreadystatechange = function() {
+    var modal = document.getElementsByClassName("hz16-modal")[0];
+    modal.style.display = 'none';
+    for (var i in document.body.children) {
+      if (document.body.children[i].className != "hz16-modal") {
+        if (document.body.children[i].style) {
+          document.body.children[i].style.filter = "none";
+        }
+      }
+    }
+
+    window.setTimeout(function() {
+      while (document.body.firstChild) {
+        document.body.removeChild(document.body.firstChild)
+      }
+
+      document.body.style.backgroundImage = 'none';
+      //document.body.style.backgroundColor = 'white';
+
+      var video = document.createElement('video');
+      video.setAttribute('playsinline', true);
+      video.setAttribute('autoplay', true);
+      video.setAttribute('muted', true);
+      video.setAttribute('loop', true);
+      video.setAttribute('id', 'bgvid');
+
+      var source = document.createElement('source');
+      source.setAttribute('src', 'polina.mp4');
+      source.setAttribute('type', 'video/mp4');
+
+      var h1 = document.createElement('h1');
+      h1.setAttribute('id', 'money-text');
+      h1.innerHTML = 'WELCOME';
+
+      video.appendChild(source);
+      document.body.appendChild(video);
+      document.body.appendChild(h1);
+    }, 1000);
+  }
+  http.send(params);
 }
 
 function fetchVideoImage() {
-          console.log("Fetch video Data");
-          var canvas = document.getElementById('canvas');
-          var context = canvas.getContext('2d');
-          var j = 0;
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
-          var data = {
-              width: canvas.width,
-              height: canvas.height,
-              data : context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
-              index : j
-          }
-          console.log("Fetched video Data");
-          ImageProcModule.postMessage(data);
-          console.log("Post Message");
-          j += 1;
-          window.setTimeout(fetchVideoImage, 1);
+  console.log("Fetch video Data");
+  var canvas = document.getElementById('canvas');
+  var context = canvas.getContext('2d');
+  var j = 0;
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  var data = {
+      width: canvas.width,
+      height: canvas.height,
+      data : context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
+      index : j
+  }
+  console.log("Fetched video Data");
+  ImageProcModule.postMessage(data);
+  console.log("Post Message");
+  j += 1;
+  window.setTimeout(fetchVideoImage, 1);
 }
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
