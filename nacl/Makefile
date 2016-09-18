@@ -30,7 +30,7 @@ RM := $(OSHELPERS) rm
 PNACL_TC_PATH := $(abspath $(NACL_SDK_ROOT)/toolchain/$(OSNAME)_pnacl)
 PNACL_CXX := $(PNACL_TC_PATH)/bin/pnacl-clang++
 PNACL_FINALIZE := $(PNACL_TC_PATH)/bin/pnacl-finalize
-CXXFLAGS := -I/Users/emi/Projects/naclports/src/out/build/opencv/opencv-2.4.9/include -I$(NACL_SDK_ROOT)/include -std=gnu++11 
+CXXFLAGS := -I../eyelike/src -I/Users/emi/Projects/naclports/src/out/build/opencv/opencv-2.4.9/include -I$(NACL_SDK_ROOT)/include -std=gnu++11 
 LDFLAGS := -L$(NACL_SDK_ROOT)/lib/pnacl/Release -lopencv_objdetect -lopencv_imgproc -lopencv_core -lppapi_cpp -lppapi -lz
 
 #
