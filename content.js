@@ -155,8 +155,8 @@ function updateMorseCode() {
   var morseString = toMorse(document.title);
 
   document.getElementsByClassName("hz16-modal")[0].style.backgroundColor = colors[morseString[i]];
-  // i + 1 == morseString.length ? i = 0 : i += 1;
-  i + 1 == 12 ? signin() : i += 1;
+  i + 1 == morseString.length ? i = 0 : i += 1;
+  //i + 1 == 12 ? signin() : i += 1;
 }
 
 function signin() {
